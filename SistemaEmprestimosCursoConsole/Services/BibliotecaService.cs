@@ -103,15 +103,15 @@ namespace SistemaEmprestimosCursoConsole.Services
                 Console.WriteLine("Escolha: ");
                 string opcao = Console.ReadLine();
 
-                //switch (opcao)
-                //{
-                //    case "1": AdicionarEmprestimo(); break;
-                //    case "2": ListarEmprestimosAtivos(); break;
-                //    case "3": DevolverLivro(); break;
-                //    case "4": HistoricoEmprestimosUsuarios(); break;
-                //    case "0": return;
-                //    default: Console.WriteLine("Opção invalida."); break;
-                //}
+                switch (opcao)
+                {
+                    case "1": AdicionarEmprestimo(); break;
+                    case "2": ListarEmprestimosAtivos(); break;
+                    case "3": DevolverLivro(); break;
+                    case "4": HistoricoEmprestimosUsuarios(); break;
+                    case "0": return;
+                    default: Console.WriteLine("Opção invalida."); break;
+                }
             }
         }
     
@@ -227,6 +227,87 @@ namespace SistemaEmprestimosCursoConsole.Services
 
             usuarios.RemoveAll(l => l.Id == id);
             Console.WriteLine("Usário removido!");
+        }
+
+        //Métodos Empréstimos
+
+        private void AdicionarEmprestimo()
+        {
+            Console.Write("Id do livro: ");
+            int livroId = Convert.ToInt32(Console.ReadLine());
+
+            Livro livro = livros.FirstOrDefault(l => l.Id == livroId && l.Disponivel);
+
+            if (livro == null)
+            {
+                Console.WriteLine("Livro não disponivel ou não encontrado!");
+                return;
+            }
+
+            Console.Write("Id do usuário: ");
+            int usuarioId = Convert.ToInt32(Console.ReadLine());
+
+            if (!usuarios.Any(u => u.Id == usuarioId))
+            {
+                Console.WriteLine("Usuário não disponivel ou não encontrado!");
+                return;
+            }
+
+            emprestimos.Add(new Emprestimo { Id = emprestimoIdConter++, LivroId = livroId, UsuarioId = usuarioId });
+
+            livro.Disponivel = false;
+
+            Console.WriteLine("Emprestimo registrado!");
+        }
+
+        private void ListarEmprestimosAtivos()
+        {
+            List<Emprestimo> ativos = emprestimos.Where(e => e.DataDevolucao == null).ToList();
+
+            foreach (Emprestimo emprestimo in ativos)
+            {
+                Usuario usuario = usuarios.FirstOrDefault(u => u.Id == emprestimo.UsuarioId);
+                Livro livro = livros.FirstOrDefault(u => u.Id == emprestimo.LivroId);
+
+                Console.WriteLine($"Id Emprestimo: {emprestimo.Id} | Livro: {livro.Titulo} | Usuário: {usuario.Nome} | Data Empréstimo: {emprestimo.DataEmprestimo.ToShortDateString()}");
+            }
+        }
+
+        private void DevolverLivro()
+        {
+            Console.Write("Id do Empréstimo: ");
+            int id = Convert.ToInt32(Console.ReadLine());
+
+            Emprestimo emprestimo = emprestimos.FirstOrDefault(e => e.Id == id && e.DataDevolucao == null);
+
+            if (emprestimo == null)
+            {
+                Console.WriteLine("Empréstimo não encontrado ou já devolvido");
+                return;
+            }
+
+            emprestimo.DataDevolucao = DateTime.Now;
+            Livro livro = livros.FirstOrDefault(l => l.Id == emprestimo.LivroId);
+            livro.Disponivel = true;
+
+            Console.WriteLine("Livro devolvido com sucesso!");
+        }
+
+        private void HistoricoEmprestimosUsuarios()
+        {
+            Console.Write("Id do Usuário: ");
+            int usuarioId = Convert.ToInt32(Console.ReadLine());
+
+            List<Emprestimo> historico = emprestimos.Where(e => e.UsuarioId == usuarioId).ToList();
+
+            foreach(Emprestimo emprestimo in historico)
+            {
+                Livro livro = livros.FirstOrDefault(l => l.Id == emprestimo.LivroId);
+
+                string devolucao = emprestimo.DataDevolucao.HasValue ? emprestimo.DataDevolucao?.ToShortDateString() : "Em aberto";
+
+                Console.WriteLine($"Livro: {livro.Titulo} | Empréstimo: {emprestimo.DataEmprestimo.ToShortDateString()} | Devolução: {devolucao}");
+            }
         }
     }
 }
