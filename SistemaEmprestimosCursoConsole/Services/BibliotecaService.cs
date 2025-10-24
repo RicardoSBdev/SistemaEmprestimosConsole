@@ -8,12 +8,19 @@ using System.Threading.Tasks;
 namespace SistemaEmprestimosCursoConsole.Services
 {
     internal class BibliotecaService
-    {
+    {   
+        private List<Livro> livros = new List<Livro>();
+        private List<Usuario> usuarios = new List<Usuario>();
+        private List<Emprestimo> emprestimos = new List<Emprestimo>();
+
+        private int livroIdConter = 1;
+        private int usuarioIdConter = 1;
+        private int emprestimoIdConter = 1;
+         
         public void MenuPrincipal()
         {
             while(true) 
             {
-                Console.Clear();
                 Console.WriteLine("\n ========== MENU BIBLIOTECA ==========");
                 Console.WriteLine("1. Gerenciar Livros");
                 Console.WriteLine("2. Gerenciar Usuários");
@@ -37,7 +44,6 @@ namespace SistemaEmprestimosCursoConsole.Services
         {
             while (true)
             {
-                Console.Clear();
                 Console.WriteLine("\n ========== GERENCIAMENTO DE LIVROS ==========");
                 Console.WriteLine("1. Adicionar Livros");
                 Console.WriteLine("2. Listar Livros");
@@ -47,15 +53,15 @@ namespace SistemaEmprestimosCursoConsole.Services
                 Console.WriteLine("Escolha: ");
                 string opcao = Console.ReadLine();
 
-                //switch (opcao)
-                //{
-                //    case "1": AdicionarLivro(); break;
-                //    case "2": ListarLivros(); break;
-                //    case "3": AtualizarLivro(); break;
-                //    case "4": RemoverLivro(); break;
-                //    case "0": return;
-                //    default: Console.WriteLine("Opção invalida."); break;
-                //}
+                switch (opcao)
+                {
+                    case "1": AdicionarLivro(); break;
+                    case "2": ListarLivros(); break;
+                    case "3": AtualizarLivro(); break;
+                    case "4": RemoverLivro(); break;
+                    case "0": return;
+                    default: Console.WriteLine("Opção invalida."); break;
+                }
             }
         }
     
@@ -63,7 +69,6 @@ namespace SistemaEmprestimosCursoConsole.Services
         {
             while (true)
             {
-                Console.Clear();
                 Console.WriteLine("\n ========== GERENCIAMENTO DE USUÁRIOS ==========");
                 Console.WriteLine("1. Adicionar Usuário");
                 Console.WriteLine("2. Listar Usuário");
@@ -89,7 +94,6 @@ namespace SistemaEmprestimosCursoConsole.Services
         {
             while (true)
             {
-                Console.Clear();
                 Console.WriteLine("\n ========== GERENCIAMENTO DE EMPRÉSTIMOS ==========");
                 Console.WriteLine("1. Adicionar Empréstimo");
                 Console.WriteLine("2. Listar Empréstimos Ativos");
@@ -109,6 +113,63 @@ namespace SistemaEmprestimosCursoConsole.Services
                 //    default: Console.WriteLine("Opção invalida."); break;
                 //}
             }
+        }
+    
+        //Métodos Livros
+
+        private void AdicionarLivro()
+        {
+            Console.Write("Título: ");
+            string titulo = Console.ReadLine();
+
+            Console.Write("Autor: ");
+            string autor = Console.ReadLine();
+
+            livros.Add(new Livro { Id = livroIdConter, Titulo = titulo, Autor = autor});
+            Console.WriteLine("Livro adicionado com sucesso!");
+        }
+    
+        private void ListarLivros()
+        {
+            Console.WriteLine("\n Lista de livros: ");
+
+            foreach (Livro livro in livros)
+            {
+                string status = livro.Disponivel ? "Disponivel" : "Emprestado";
+                Console.WriteLine($" {livro.Id} | Título: {livro.Titulo} | Autor: {livro.Autor} | {status}");
+            }
+        }
+        
+        private void AtualizarLivro()
+        {
+            Console.Write("Id do livro a atualizar: ");
+            int id = Convert.ToInt32(Console.ReadLine());
+
+            Livro livro = livros.FirstOrDefault( l => l.Id == id );
+
+            if ( livro != null )
+            {
+                Console.Write("Novo Título: ");
+                livro.Titulo = Console.ReadLine();
+
+                Console.Write("Novo Autor: ");
+                livro.Autor = Console.ReadLine();
+
+                Console.WriteLine("Livro atualizado");
+            }
+            else
+            {
+                Console.WriteLine("Livro não localizado!");
+            }
+        }
+
+        private void RemoverLivro()
+        {
+            Console.Write("Id do livro a atualizar: ");
+            int id = Convert.ToInt32(Console.ReadLine());
+
+            livros.RemoveAll(l => l.Id == id);
+            Console.WriteLine("Livro removido!");
         }
     }
 }

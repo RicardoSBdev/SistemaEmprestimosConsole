@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SistemaEmprestimosCursoConsole.Models
 {
-    internal class Livros
+    internal class Livro
     {
         public int Id { get; set; }
         public string Titulo { get; set; }
