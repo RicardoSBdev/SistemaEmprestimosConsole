@@ -78,15 +78,15 @@ namespace SistemaEmprestimosCursoConsole.Services
                 Console.WriteLine("Escolha: ");
                 string opcao = Console.ReadLine();
 
-                //switch (opcao)
-                //{
-                //    case "1": AdicionarUsuario(); break;
-                //    case "2": ListarUsuarios(); break;
-                //    case "3": AtualizarUsuario(); break;
-                //    case "4": RemoverUsuario(); break;
-                //    case "0": return;
-                //    default: Console.WriteLine("Opção invalida."); break;
-                //}
+                switch (opcao)
+                {
+                    case "1": AdicionarUsuario(); break;
+                    case "2": ListarUsuarios(); break;
+                    case "3": AtualizarUsuario(); break;
+                    case "4": RemoverUsuario(); break;
+                    case "0": return;
+                    default: Console.WriteLine("Opção invalida."); break;
+                }
             }
         }
     
@@ -170,6 +170,63 @@ namespace SistemaEmprestimosCursoConsole.Services
 
             livros.RemoveAll(l => l.Id == id);
             Console.WriteLine("Livro removido!");
+        }
+    
+        //Métodos Usuários
+
+        private void AdicionarUsuario()
+        {
+            Console.Write("Nome: ");
+            string nome = Console.ReadLine();
+
+            Console.Write("Email: ");
+            string email = Console.ReadLine();
+
+            usuarios.Add(new Usuario { Id = usuarioIdConter++, Nome = nome , Email = email });
+
+            Console.WriteLine("Usuário cadastrado!");
+        }
+
+        private void ListarUsuarios()
+        {
+            Console.WriteLine("\n Lista de Usuários: ");
+
+            foreach (Usuario usuario in usuarios)
+            {
+                Console.WriteLine($"ID: {usuario.Id} | Nome: {usuario.Nome} | Email: {usuario.Email}");
+            }
+        }
+
+        private void AtualizarUsuario()
+        {
+            Console.WriteLine("Id do usuário a atuluzar: ");
+            int id = Convert.ToInt32(Console.ReadKey());
+
+            Usuario usuario = usuarios.First(u => u.Id == id);
+
+            if(usuario != null)
+            {
+                Console.Write("Novo nome do usuário: ");
+                usuario.Nome = Console.ReadLine();
+
+                Console.Write("Novo emials do usuário: ");
+                usuario.Email = Console.ReadLine();
+
+                Console.WriteLine("Usuário atualizado!");
+            } 
+            else
+            {
+                Console.WriteLine("Usuário não encontrado!");
+            }
+        }
+    
+        private void RemoverUsuario()
+        {
+            Console.Write("Id do usuário a atualizar: ");
+            int id = Convert.ToInt32(Console.ReadLine());
+
+            usuarios.RemoveAll(l => l.Id == id);
+            Console.WriteLine("Usário removido!");
         }
     }
 }
